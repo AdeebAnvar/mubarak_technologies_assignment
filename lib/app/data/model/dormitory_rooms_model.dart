@@ -1,13 +1,28 @@
-import 'package:mubarak_technologies_assignent/app/data/model/cess_model.dart';
-import 'package:mubarak_technologies_assignent/app/data/model/dormitory_bed_model.dart';
-import 'package:mubarak_technologies_assignent/app/data/model/food_model.dart';
-import 'package:mubarak_technologies_assignent/app/data/model/offers_model.dart';
-import 'package:mubarak_technologies_assignent/app/data/model/tax_model.dart';
+import 'cess_model.dart';
+import 'dormitory_bed_model.dart';
+import 'food_model.dart';
+import 'offers_model.dart';
+import 'tax_model.dart';
 
 class DormitoryRoomModel {
+  DormitoryRoomModel({
+    this.rows,
+    this.columns,
+    this.beds,
+    this.no,
+    this.roomType,
+    this.foods,
+    this.name,
+    this.maxOccupents,
+    this.offers,
+    this.cess,
+    this.taxPercent,
+    this.imageUrls,
+    this.amenities,
+  });
   int? rows;
   int? columns;
-  List<DormitoryBedModel>? bed;
+  List<DormitoryBedModel>? beds;
   String? no;
   String? roomType;
   List<FoodModel>? foods;
@@ -17,18 +32,5 @@ class DormitoryRoomModel {
   CessModel? cess;
   TaxModel? taxPercent;
   List<String>? imageUrls;
-
-  DormitoryRoomModel(
-      {this.rows,
-      this.columns,
-      this.bed,
-      this.no,
-      this.roomType,
-      this.foods,
-      this.name,
-      this.maxOccupents,
-      this.offers,
-      this.cess,
-      this.taxPercent,
-      this.imageUrls});
+  List<String>? amenities;
 }

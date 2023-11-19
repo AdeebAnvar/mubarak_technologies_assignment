@@ -12,8 +12,8 @@ class AppPages {
 
   static const String INITIAL = Routes.HOME;
 
-  static final routes = [
-    GetPage(
+  static final List<GetPage<dynamic>> routes = <GetPage<dynamic>>[
+    GetPage<dynamic>(
       name: _Paths.HOME,
       page: () => const HomeView(),
       binding: HomeBinding(),
