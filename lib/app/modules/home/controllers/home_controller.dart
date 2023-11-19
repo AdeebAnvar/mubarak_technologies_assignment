@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import '../../../data/model/dormitory_bed_model.dart';
 import '../../../data/model/dormitory_model.dart';
@@ -21,11 +23,20 @@ class HomeController extends GetxController {
 
   double getLowestBedPrice(DormitoryRoomModel room) {
     double lowestPrice = double.infinity;
-    for (final DormitoryBedModel bed in room.beds!) {
-      if (bed.price! < lowestPrice) {
-        lowestPrice = bed.price!.toDouble();
-      }
-    }
+    lowestPrice = room.beds!
+        .where((DormitoryBedModel bed) => bed.price! < lowestPrice)
+        .fold(
+            lowestPrice,
+            (double currentMin, DormitoryBedModel bed) =>
+                bed.price!.toDouble() < currentMin
+                    ? bed.price!.toDouble()
+                    : currentMin);
+    // for (final DormitoryBedModel bed in room.beds!) {
+    //   if (bed.price! < lowestPrice) {
+    //     lowestPrice = bed.price!.toDouble();
+    //   }
+    // }
+    log(lowestPrice.toString());
     return lowestPrice;
   }
 
