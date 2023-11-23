@@ -15,14 +15,17 @@ class DormitoryServiceWidget extends StatelessWidget {
         if (controller.dormitories.isEmpty) {
           return const CircularProgressIndicator();
         } else {
+          double? discountedPrice;
           final DormitoryRoomModel lowestPricedRoom = controller.dormitories
               .expand((DormitoryModel dormitory) => dormitory.rooms!)
-              .reduce((DormitoryRoomModel a, DormitoryRoomModel b) => a.offers!
-                          .getDiscountedPrice(controller.getRoomPrice(a)) <
-                      b.offers!.getDiscountedPrice(controller.getRoomPrice(b))
-                  ? a
-                  : b);
-
+              .reduce((DormitoryRoomModel a, DormitoryRoomModel b) {
+            final double aPrice =
+                controller.getLowestBedPriceAfterDiscountCalculation(a);
+            final double bPrice =
+                controller.getLowestBedPriceAfterDiscountCalculation(b);
+            discountedPrice = aPrice < bPrice ? aPrice : bPrice;
+            return aPrice < bPrice ? a : b;
+          });
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -41,7 +44,7 @@ class DormitoryServiceWidget extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '${lowestPricedRoom.name} - ₹${lowestPricedRoom.offers!.getDiscountedPrice(lowestPricedRoom.beds![0].price!.toDouble())}',
+                '${lowestPricedRoom.name} - ₹$discountedPrice',
                 style: const TextStyle(fontSize: 14),
               ),
             ],

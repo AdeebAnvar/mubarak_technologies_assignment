@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import '../../../data/model/dormitory_bed_model.dart';
 import '../../../data/model/dormitory_model.dart';
@@ -19,25 +17,6 @@ class HomeController extends GetxController {
 
   void fetchDormitories() {
     dormitories.assignAll(repository.getDormitories());
-  }
-
-  double getLowestBedPrice(DormitoryRoomModel room) {
-    double lowestPrice = double.infinity;
-    lowestPrice = room.beds!
-        .where((DormitoryBedModel bed) => bed.price! < lowestPrice)
-        .fold(
-            lowestPrice,
-            (double currentMin, DormitoryBedModel bed) =>
-                bed.price!.toDouble() < currentMin
-                    ? bed.price!.toDouble()
-                    : currentMin);
-    // for (final DormitoryBedModel bed in room.beds!) {
-    //   if (bed.price! < lowestPrice) {
-    //     lowestPrice = bed.price!.toDouble();
-    //   }
-    // }
-    log(lowestPrice.toString());
-    return lowestPrice;
   }
 
   double getRoomPrice(DormitoryRoomModel room) {
@@ -66,5 +45,58 @@ class HomeController extends GetxController {
     }
 
     return taxAmount.round();
+  }
+
+  double getLowestBedPriceAfterDiscountCalculation(DormitoryRoomModel room) {
+    double lowestPriceAfterCalculation = double.infinity;
+
+    for (final DormitoryBedModel bed in room.beds!) {
+      final double discountedPrice = getDiscountedPrice(
+        originalPrice: bed.price!.toDouble(),
+        flatDiscount: room.offers?.flatDiscount,
+        offPercent: room.offers?.offPercent,
+      );
+
+      if (discountedPrice < lowestPriceAfterCalculation) {
+        lowestPriceAfterCalculation = discountedPrice;
+      }
+    }
+
+    return lowestPriceAfterCalculation;
+  }
+
+  double getLowestBedPrice(DormitoryRoomModel room) {
+    double lowestPrice = double.infinity;
+
+    for (final DormitoryBedModel bed in room.beds!) {
+      if (bed.price! < lowestPrice) {
+        lowestPrice = bed.price!.toDouble();
+      }
+    }
+
+    return lowestPrice;
+  }
+
+  double getDiscountedPrice(
+      {required double originalPrice,
+      required double? flatDiscount,
+      required double? offPercent}) {
+    if (flatDiscount != null && flatDiscount > 0) {
+      return originalPrice - flatDiscount;
+    } else if (offPercent != null && offPercent > 0) {
+      return originalPrice - (originalPrice * offPercent / 100);
+    } else {
+      return originalPrice;
+    }
+  }
+
+  double calculateDiscountedPrice(DormitoryRoomModel room) {
+    final double lowestBedPrice = getLowestBedPrice(room);
+    final double discountedPrice = getDiscountedPrice(
+      originalPrice: lowestBedPrice,
+      flatDiscount: room.offers?.flatDiscount,
+      offPercent: room.offers?.offPercent,
+    );
+    return discountedPrice;
   }
 }

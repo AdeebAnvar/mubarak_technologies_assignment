@@ -32,7 +32,12 @@ class DormitoryRoomsWidget extends StatelessWidget {
                       final double lowestBedPrice =
                           controller.getLowestBedPrice(room);
                       final double discountedPrice =
-                          room.offers!.getDiscountedPrice(lowestBedPrice);
+                          controller.getDiscountedPrice(
+                        originalPrice: lowestBedPrice,
+                        flatDiscount: room.offers!.flatDiscount,
+                        offPercent: room.offers!.offPercent,
+                      );
+
                       final int taxAmount =
                           controller.calculateTax(room, discountedPrice);
 
@@ -40,10 +45,12 @@ class DormitoryRoomsWidget extends StatelessWidget {
                         elevation: 4,
                         child: ListTile(
                           leading: Image.network(room.imageUrls![0]),
-                          title: Text(room.name.toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              )),
+                          title: Text(
+                            room.name.toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -56,7 +63,8 @@ class DormitoryRoomsWidget extends StatelessWidget {
                                   Text(
                                     ' ₹ $lowestBedPrice ',
                                     style: const TextStyle(
-                                        decoration: TextDecoration.lineThrough),
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
                                   ),
                                 ],
                               ),
